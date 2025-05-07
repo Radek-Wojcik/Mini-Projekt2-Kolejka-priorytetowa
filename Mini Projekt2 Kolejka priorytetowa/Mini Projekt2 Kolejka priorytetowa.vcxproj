@@ -128,6 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Mini Projekt2 Kolejka priorytetowa.cpp" />
+    <ClCompile Include="priority_queue.cpp" />
+    <ClCompile Include="testowanie kolejki heap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="priority_queue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
