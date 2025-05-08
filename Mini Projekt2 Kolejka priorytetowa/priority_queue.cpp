@@ -16,3 +16,16 @@ PriorityQueue<T>::PriorityQueue(int minPrio, int maxPrio)
     }
 }
 
+template <typename T>
+int PriorityQueue<T>::generateRandomPriority() {
+    std::uniform_int_distribution<int> dist(minPriority, maxPriority);
+    return dist(rng);
+}
+
+template <typename T>
+void PriorityQueue<T>::setPriorityRange(int minPrio, int maxPrio) {
+    if (minPrio < maxPrio) {
+        minPriority = minPrio;
+        maxPriority = maxPrio;
+    }
+}
