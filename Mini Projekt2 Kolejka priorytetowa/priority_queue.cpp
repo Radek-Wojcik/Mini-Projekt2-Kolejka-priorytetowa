@@ -182,3 +182,17 @@ void PriorityQueue<T>::decreaseKey(const T& element, int newPriority) {
     heap[index].priority = newPriority;
     heapifyDown(index);
 }
+
+template <typename T>
+size_t PriorityQueue<T>::returnSize() const {
+    return heap.size();
+}
+
+template <typename T>
+bool PriorityQueue<T>::isEmpty() const {
+    return heap.empty();
+}
+
+template class PriorityQueue<int>;
+template class PriorityQueue<double>;
+template class PriorityQueue<std::string>;
