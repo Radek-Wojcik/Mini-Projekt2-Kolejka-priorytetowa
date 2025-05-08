@@ -150,3 +150,35 @@ void PriorityQueue<T>::modifyKey(const T& element, int newPriority) {
         heapifyDown(index);
     }
 }
+
+template <typename T>
+void PriorityQueue<T>::increaseKey(const T& element, int newPriority) {
+    int index = findElement(element);
+
+    if (index == -1) {
+        throw std::runtime_error("Element not found in the priority queue");
+    }
+
+    if (newPriority <= heap[index].priority) {
+        throw std::runtime_error("New priority must be greater than current priority");
+    }
+
+    heap[index].priority = newPriority;
+    heapifyUp(index);
+}
+
+template <typename T>
+void PriorityQueue<T>::decreaseKey(const T& element, int newPriority) {
+    int index = findElement(element);
+
+    if (index == -1) {
+        throw std::runtime_error("Element not found in the priority queue");
+    }
+
+    if (newPriority >= heap[index].priority) {
+        throw std::runtime_error("New priority must be less than current priority");
+    }
+
+    heap[index].priority = newPriority;
+    heapifyDown(index);
+}
