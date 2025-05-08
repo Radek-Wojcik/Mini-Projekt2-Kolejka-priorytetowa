@@ -79,3 +79,13 @@ void PriorityQueue<T>::heapifyDown(int index) {
         index = highestPriorityIndex;
     }
 }
+
+template <typename T>
+int PriorityQueue<T>::findElement(const T& element) const {
+    for (size_t i = 0; i < heap.size(); ++i) {
+        if (heap[i].element == element) {
+            return i;
+        }
+    }
+    return -1;
+}
