@@ -7,7 +7,26 @@
 template <typename T>
 class PriorityQueue {
 private:
+    // Struktura przechowuj¹ca element, jego priorytet i kolejnoœæ wstawiania
+    struct Node {
+        T element;
+        int priority;
+        size_t insertionOrder;
 
+        Node(const T& e, int p, size_t order) : element(e), priority(p), insertionOrder(order) {}
+    };
+
+    std::vector<Node> heap;
+    size_t currentOrder; // Licznik do œledzenia kolejnoœci wstawiania
+    std::mt19937 rng; // Generator liczb losowych
+    int minPriority; // Minimalna wartoœæ priorytetu
+    int maxPriority; // Maksymalna wartoœæ priorytetu
+
+    // Metody pomocnicze dla operacji na kopcu
+    void heapifyUp(int index);
+    void heapifyDown(int index);
+    int findElement(const T& element) const;
+    int generateRandomPriority()
 
 public:
 
