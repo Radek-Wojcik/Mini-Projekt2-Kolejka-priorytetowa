@@ -29,8 +29,26 @@ private:
     int generateRandomPriority()
 
 public:
+    // Konstruktor z parametrami zakresu priorytetów
+    PriorityQueue(int minPrio = 1, int maxPrio = 1000);
 
+    void insert(const T& element, int priority = -1); // -1 to wygenerowanie losowego priorytetu
+    T extractMax();
+    T findMax() const;
+    T peek() const;
+    void modifyKey(const T& element, int newPriority);
+    void increaseKey(const T& element, int newPriority);
+    void decreaseKey(const T& element, int newPriority);
+    size_t returnSize() const;
+
+    
+    bool isEmpty() const;
+    void setPriorityRange(int minPrio, int maxPrio);
 
 };
+
+extern template class PriorityQueue<int>;
+extern template class PriorityQueue<double>;
+extern template class PriorityQueue<std::string>;
 
 #endif // PRIORITY_QUEUE_H
