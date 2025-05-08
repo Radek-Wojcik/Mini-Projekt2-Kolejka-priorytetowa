@@ -89,3 +89,31 @@ int PriorityQueue<T>::findElement(const T& element) const {
     }
     return -1;
 }
+
+template <typename T>
+void PriorityQueue<T>::insert(const T& element, int priority) {
+    // Jeœli priorytet jest -1, wygeneruj losowy priorytet
+    if (priority == -1) {
+        priority = generateRandomPriority();
+    }
+
+    heap.push_back(Node(element, priority, currentOrder++));
+    heapifyUp(heap.size() - 1);
+}
+
+template <typename T>
+T PriorityQueue<T>::extractMax() {
+    if (isEmpty()) {
+        throw std::runtime_error("Priority queue is empty");
+    }
+
+    T maxElement = heap[0].element;
+    heap[0] = heap.back();
+    heap.pop_back();
+
+    if (!isEmpty()) {
+        heapifyDown(0);
+    }
+
+    return maxElement;
+}
