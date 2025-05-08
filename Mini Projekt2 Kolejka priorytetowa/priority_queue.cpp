@@ -117,3 +117,36 @@ T PriorityQueue<T>::extractMax() {
 
     return maxElement;
 }
+
+template <typename T>
+T PriorityQueue<T>::findMax() const {
+    if (isEmpty()) {
+        throw std::runtime_error("Priority queue is empty");
+    }
+
+    return heap[0].element;
+}
+
+template <typename T>
+T PriorityQueue<T>::peek() const {
+    return findMax();
+}
+
+template <typename T>
+void PriorityQueue<T>::modifyKey(const T& element, int newPriority) {
+    int index = findElement(element);
+
+    if (index == -1) {
+        throw std::runtime_error("Element not found in the priority queue");
+    }
+
+    int oldPriority = heap[index].priority;
+    heap[index].priority = newPriority;
+
+    if (newPriority > oldPriority) {
+        heapifyUp(index);
+    }
+    else if (newPriority < oldPriority) {
+        heapifyDown(index);
+    }
+}
