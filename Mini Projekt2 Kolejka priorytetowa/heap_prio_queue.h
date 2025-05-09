@@ -49,6 +49,9 @@ public:
     bool isEmpty() const;
     void setPriorityRange(int minPrio, int maxPrio);
 
+    bool find(const T& element) const; // metoda do znajdowania elementu
+    bool remove(const T& element); // Usuniêcie konkretnego elementu
+
 };
 
 extern template class HeapPrioQueue<int>;

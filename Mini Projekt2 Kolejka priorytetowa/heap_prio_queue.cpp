@@ -193,6 +193,39 @@ bool HeapPrioQueue<T>::isEmpty() const {
     return heap.empty();
 }
 
+template <typename T>
+bool HeapPrioQueue<T>::find(const T& element) const {
+    return findElement(element) != -1;
+}
+
+template <typename T>
+bool HeapPrioQueue<T>::remove(const T& element) {
+    int index = findElement(element);
+    if (index == -1) {
+        return false; // Element nie znaleziony
+    }
+
+    // Zamieñ element do usuniêcia z ostatnim elementem
+    heap[index] = heap.back();
+    heap.pop_back();
+
+    // Jeœli usuniêty element nie by³ ostatnim, przywróæ w³aœciwoœci kopca
+    if (index < static_cast<int>(heap.size())) {
+        // SprawdŸ, czy trzeba przesun¹æ w górê czy w dó³
+        int parent = (index - 1) / 2;
+        if (index > 0 && (heap[parent].priority < heap[index].priority ||
+            (heap[parent].priority == heap[index].priority &&
+                heap[parent].insertionOrder > heap[index].insertionOrder))) {
+            heapifyUp(index);
+        }
+        else {
+            heapifyDown(index);
+        }
+    }
+
+    return true;
+}
+
 template class HeapPrioQueue<int>;
 template class HeapPrioQueue<double>;
 template class HeapPrioQueue<std::string>;
