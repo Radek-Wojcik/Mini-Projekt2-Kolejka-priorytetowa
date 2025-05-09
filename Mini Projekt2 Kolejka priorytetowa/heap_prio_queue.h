@@ -51,6 +51,8 @@ public:
 
     bool find(const T& element) const; // metoda do znajdowania elementu
     bool remove(const T& element); // Usuniêcie konkretnego elementu
+    void buildFromFile(const std::string& filename); // Budowanie z pliku
+    void createRandom(size_t size); // Tworzenie losowej struktury
 
 };
 

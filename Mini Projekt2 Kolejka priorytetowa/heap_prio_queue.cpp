@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <fstream>
+#include <sstream>
+
 
 template <typename T>
 HeapPrioQueue<T>::HeapPrioQueue(int minPrio, int maxPrio)
@@ -224,6 +227,64 @@ bool HeapPrioQueue<T>::remove(const T& element) {
     }
 
     return true;
+}
+
+template <typename T>
+void HeapPrioQueue<T>::buildFromFile(const std::string& filename) {
+    // Najpierw usuñ poprzednie dane
+    clear();
+
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file: " + filename);
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        T element;
+        int priority;
+
+        // Zak³adamy, ¿e ka¿da linia zawiera element i priorytet oddzielone spacj¹
+        if (iss >> element >> priority) {
+            insert(element, priority);
+        }
+    }
+
+    file.close();
+}
+
+template <typename T>
+void HeapPrioQueue<T>::createRandom(size_t size) {
+    // Wyczyœæ istniej¹ce dane
+    clear();
+
+    // Generuj losowe elementy i priorytety
+    for (size_t i = 0; i < size; ++i) {
+        // Dla typów liczbowych generujemy losowe wartoœci
+        if constexpr (std::is_same_v<T, int> || std::is_same_v<T, double>) {
+            std::uniform_real_distribution<double> elemDist(1.0, 1000.0);
+            T randomElement;
+
+            if constexpr (std::is_same_v<T, int>) {
+                randomElement = static_cast<int>(elemDist(rng));
+            }
+            else {
+                randomElement = elemDist(rng);
+            }
+
+            insert(randomElement, generateRandomPriority());
+        }
+        // Dla stringów generujemy losowe ci¹gi znaków
+        else if constexpr (std::is_same_v<T, std::string>) {
+            std::string randomStr = "item_" + std::to_string(i);
+            insert(randomStr, generateRandomPriority());
+        }
+        // Dla innych typów (jeœli bêd¹ u¿ywane) - domyœlna implementacja
+        else {
+            throw std::runtime_error("Random generation not supported for this type");
+        }
+    }
 }
 
 template class HeapPrioQueue<int>;
