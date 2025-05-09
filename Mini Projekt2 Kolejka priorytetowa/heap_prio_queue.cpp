@@ -287,6 +287,25 @@ void HeapPrioQueue<T>::createRandom(size_t size) {
     }
 }
 
+template <typename T>
+void HeapPrioQueue<T>::display() const {
+    if (isEmpty()) {
+        std::cout << "Queue is empty." << std::endl;
+        return;
+    }
+
+    std::cout << "Queue contents (element, priority):" << std::endl;
+    for (size_t i = 0; i < heap.size(); ++i) {
+        std::cout << heap[i].element << " (priority: " << heap[i].priority << ")" << std::endl;
+    }
+}
+
+template <typename T>
+void HeapPrioQueue<T>::clear() {
+    heap.clear();
+    currentOrder = 0;
+}
+
 template class HeapPrioQueue<int>;
 template class HeapPrioQueue<double>;
 template class HeapPrioQueue<std::string>;

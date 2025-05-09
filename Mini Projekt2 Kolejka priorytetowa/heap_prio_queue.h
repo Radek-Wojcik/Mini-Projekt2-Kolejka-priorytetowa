@@ -53,6 +53,8 @@ public:
     bool remove(const T& element); // Usuniêcie konkretnego elementu
     void buildFromFile(const std::string& filename); // Budowanie z pliku
     void createRandom(size_t size); // Tworzenie losowej struktury
+    void display() const; // Wyœwietlanie zawartoœci kolejki
+    void clear(); // Czyszczenie kolejki
 
 };
 
