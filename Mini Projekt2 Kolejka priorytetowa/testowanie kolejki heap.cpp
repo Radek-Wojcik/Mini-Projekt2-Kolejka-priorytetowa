@@ -1,4 +1,4 @@
-#include "priority_queue.h"
+#include "heap_prio_queue.h"
 #include <iostream>
 #include <string>
 #include <vector>

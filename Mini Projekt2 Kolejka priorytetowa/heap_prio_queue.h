@@ -1,11 +1,15 @@
-#ifndef PRIORITY_QUEUE_H
-#define PRIORITY_QUEUE_H
+#ifndef HEAP_PRIO_QUEUE_H
+#define HEAP_PRIO_QUEUE_H
 
 #include <iostream>
 #include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <random>
+#include <ctime>
 
 template <typename T>
-class PriorityQueue {
+class HeapPrioQueue {
 private:
     // Struktura przechowuj¹ca element, jego priorytet i kolejnoœæ wstawiania
     struct Node {
@@ -26,11 +30,11 @@ private:
     void heapifyUp(int index);
     void heapifyDown(int index);
     int findElement(const T& element) const;
-    int generateRandomPriority()
+    int generateRandomPriority();
 
 public:
     // Konstruktor z parametrami zakresu priorytetów
-    PriorityQueue(int minPrio = 1, int maxPrio = 1000);
+    HeapPrioQueue(int minPrio = 1, int maxPrio = 1000);
 
     void insert(const T& element, int priority = -1); // -1 to wygenerowanie losowego priorytetu
     T extractMax();
@@ -47,8 +51,8 @@ public:
 
 };
 
-extern template class PriorityQueue<int>;
-extern template class PriorityQueue<double>;
-extern template class PriorityQueue<std::string>;
+extern template class HeapPrioQueue<int>;
+extern template class HeapPrioQueue<double>;
+extern template class HeapPrioQueue<std::string>;
 
-#endif // PRIORITY_QUEUE_H
+#endif // HEAP_PRIO_QUEUE_H

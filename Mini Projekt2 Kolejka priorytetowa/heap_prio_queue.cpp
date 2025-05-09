@@ -1,11 +1,11 @@
-#include "priority_queue.h"
+#include "heap_prio_queue.h"
 
 #include <iostream>
 #include <string>
 #include <limits>
 
 template <typename T>
-PriorityQueue<T>::PriorityQueue(int minPrio, int maxPrio)
+HeapPrioQueue<T>::HeapPrioQueue(int minPrio, int maxPrio)
     : currentOrder(0),
     rng(static_cast<unsigned int>(std::time(nullptr))),
     minPriority(minPrio),
@@ -17,13 +17,13 @@ PriorityQueue<T>::PriorityQueue(int minPrio, int maxPrio)
 }
 
 template <typename T>
-int PriorityQueue<T>::generateRandomPriority() {
+int HeapPrioQueue<T>::generateRandomPriority() {
     std::uniform_int_distribution<int> dist(minPriority, maxPriority);
     return dist(rng);
 }
 
 template <typename T>
-void PriorityQueue<T>::setPriorityRange(int minPrio, int maxPrio) {
+void HeapPrioQueue<T>::setPriorityRange(int minPrio, int maxPrio) {
     if (minPrio < maxPrio) {
         minPriority = minPrio;
         maxPriority = maxPrio;
@@ -31,7 +31,7 @@ void PriorityQueue<T>::setPriorityRange(int minPrio, int maxPrio) {
 }
 
 template <typename T>
-void PriorityQueue<T>::heapifyUp(int index) {
+void HeapPrioQueue<T>::heapifyUp(int index) {
     int parent = (index - 1) / 2;
 
     while (index > 0) {
@@ -49,7 +49,7 @@ void PriorityQueue<T>::heapifyUp(int index) {
 }
 
 template <typename T>
-void PriorityQueue<T>::heapifyDown(int index) {
+void HeapPrioQueue<T>::heapifyDown(int index) {
     int size = heap.size();
 
     while (true) {
@@ -81,7 +81,7 @@ void PriorityQueue<T>::heapifyDown(int index) {
 }
 
 template <typename T>
-int PriorityQueue<T>::findElement(const T& element) const {
+int HeapPrioQueue<T>::findElement(const T& element) const {
     for (size_t i = 0; i < heap.size(); ++i) {
         if (heap[i].element == element) {
             return i;
@@ -91,7 +91,7 @@ int PriorityQueue<T>::findElement(const T& element) const {
 }
 
 template <typename T>
-void PriorityQueue<T>::insert(const T& element, int priority) {
+void HeapPrioQueue<T>::insert(const T& element, int priority) {
     // Jeœli priorytet jest -1, wygeneruj losowy priorytet
     if (priority == -1) {
         priority = generateRandomPriority();
@@ -102,7 +102,7 @@ void PriorityQueue<T>::insert(const T& element, int priority) {
 }
 
 template <typename T>
-T PriorityQueue<T>::extractMax() {
+T HeapPrioQueue<T>::extractMax() {
     if (isEmpty()) {
         throw std::runtime_error("Priority queue is empty");
     }
@@ -119,7 +119,7 @@ T PriorityQueue<T>::extractMax() {
 }
 
 template <typename T>
-T PriorityQueue<T>::findMax() const {
+T HeapPrioQueue<T>::findMax() const {
     if (isEmpty()) {
         throw std::runtime_error("Priority queue is empty");
     }
@@ -128,12 +128,12 @@ T PriorityQueue<T>::findMax() const {
 }
 
 template <typename T>
-T PriorityQueue<T>::peek() const {
+T HeapPrioQueue<T>::peek() const {
     return findMax();
 }
 
 template <typename T>
-void PriorityQueue<T>::modifyKey(const T& element, int newPriority) {
+void HeapPrioQueue<T>::modifyKey(const T& element, int newPriority) {
     int index = findElement(element);
 
     if (index == -1) {
@@ -152,7 +152,7 @@ void PriorityQueue<T>::modifyKey(const T& element, int newPriority) {
 }
 
 template <typename T>
-void PriorityQueue<T>::increaseKey(const T& element, int newPriority) {
+void HeapPrioQueue<T>::increaseKey(const T& element, int newPriority) {
     int index = findElement(element);
 
     if (index == -1) {
@@ -168,7 +168,7 @@ void PriorityQueue<T>::increaseKey(const T& element, int newPriority) {
 }
 
 template <typename T>
-void PriorityQueue<T>::decreaseKey(const T& element, int newPriority) {
+void HeapPrioQueue<T>::decreaseKey(const T& element, int newPriority) {
     int index = findElement(element);
 
     if (index == -1) {
@@ -184,15 +184,15 @@ void PriorityQueue<T>::decreaseKey(const T& element, int newPriority) {
 }
 
 template <typename T>
-size_t PriorityQueue<T>::returnSize() const {
+size_t HeapPrioQueue<T>::returnSize() const {
     return heap.size();
 }
 
 template <typename T>
-bool PriorityQueue<T>::isEmpty() const {
+bool HeapPrioQueue<T>::isEmpty() const {
     return heap.empty();
 }
 
-template class PriorityQueue<int>;
-template class PriorityQueue<double>;
-template class PriorityQueue<std::string>;
+template class HeapPrioQueue<int>;
+template class HeapPrioQueue<double>;
+template class HeapPrioQueue<std::string>;
