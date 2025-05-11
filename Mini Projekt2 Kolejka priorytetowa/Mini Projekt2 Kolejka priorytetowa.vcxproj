@@ -130,7 +130,6 @@
     <ClCompile Include="Mini Projekt2 Kolejka priorytetowa.cpp" />
     <ClCompile Include="heap_prio_queue.cpp" />
     <ClCompile Include="Priority_queue_list.cpp" />
-    <ClCompile Include="testowanie kolejki heap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="heap_prio_queue.h" />

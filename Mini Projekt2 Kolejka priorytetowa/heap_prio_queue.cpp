@@ -6,7 +6,7 @@
 #include <fstream>
 #include <sstream>
 
-
+// Konstruktor: inicjalizacja generatora i zakresu priorytetów
 template <typename T>
 HeapPrioQueue<T>::HeapPrioQueue(int minPrio, int maxPrio)
     : currentOrder(0),
@@ -25,6 +25,7 @@ int HeapPrioQueue<T>::generateRandomPriority() {
     return dist(rng);
 }
 
+// Ustawienie nowego zakresu priorytetów, jeœli poprawny
 template <typename T>
 void HeapPrioQueue<T>::setPriorityRange(int minPrio, int maxPrio) {
     if (minPrio < maxPrio) {
@@ -33,11 +34,12 @@ void HeapPrioQueue<T>::setPriorityRange(int minPrio, int maxPrio) {
     }
 }
 
+// Przesuwanie wêz³a w górê
 template <typename T>
 void HeapPrioQueue<T>::heapifyUp(int index) {
     int parent = (index - 1) / 2;
 
-    while (index > 0) {
+    while (index > 0) {         // Porównanie priorytetów i kolejnoœci wstawiania
         if (heap[parent].priority < heap[index].priority ||
             (heap[parent].priority == heap[index].priority &&
                 heap[parent].insertionOrder > heap[index].insertionOrder)) {
@@ -51,6 +53,7 @@ void HeapPrioQueue<T>::heapifyUp(int index) {
     }
 }
 
+// Przesuwanie wêz³a w dó³
 template <typename T>
 void HeapPrioQueue<T>::heapifyDown(int index) {
     int size = heap.size();
@@ -60,6 +63,7 @@ void HeapPrioQueue<T>::heapifyDown(int index) {
         int rightChild = 2 * index + 2;
         int highestPriorityIndex = index;
 
+        // Wybór lepszego z dzieci
         if (leftChild < size &&
             (heap[leftChild].priority > heap[highestPriorityIndex].priority ||
                 (heap[leftChild].priority == heap[highestPriorityIndex].priority &&
@@ -74,15 +78,16 @@ void HeapPrioQueue<T>::heapifyDown(int index) {
             highestPriorityIndex = rightChild;
         }
 
+        // Jeœli nic siê nie zmienia, przerwij
         if (highestPriorityIndex == index) {
             break;
         }
-
         std::swap(heap[index], heap[highestPriorityIndex]);
         index = highestPriorityIndex;
     }
 }
 
+// ZnajdŸ indeks elementu w kopcu
 template <typename T>
 int HeapPrioQueue<T>::findElement(const T& element) const {
     for (size_t i = 0; i < heap.size(); ++i) {
@@ -93,6 +98,7 @@ int HeapPrioQueue<T>::findElement(const T& element) const {
     return -1;
 }
 
+// Wstawianie nowego elementu
 template <typename T>
 void HeapPrioQueue<T>::insert(const T& element, int priority) {
     // Jeœli priorytet jest -1, wygeneruj losowy priorytet
@@ -104,10 +110,11 @@ void HeapPrioQueue<T>::insert(const T& element, int priority) {
     heapifyUp(heap.size() - 1);
 }
 
+// Usuniêcie maksymalnego elementu
 template <typename T>
 T HeapPrioQueue<T>::extractMax() {
     if (isEmpty()) {
-        throw std::runtime_error("Priority queue is empty");
+        throw std::runtime_error("Kolejka jest pusta");
     }
 
     T maxElement = heap[0].element;
@@ -121,10 +128,11 @@ T HeapPrioQueue<T>::extractMax() {
     return maxElement;
 }
 
+// Zwraca najwiêkszy element bez usuwania
 template <typename T>
 T HeapPrioQueue<T>::findMax() const {
     if (isEmpty()) {
-        throw std::runtime_error("Priority queue is empty");
+        throw std::runtime_error("Kolejka jest pusta");
     }
 
     return heap[0].element;
@@ -135,12 +143,13 @@ T HeapPrioQueue<T>::peek() const {
     return findMax();
 }
 
+// Modyfikacja priorytetu istniej¹cego elementu
 template <typename T>
 void HeapPrioQueue<T>::modifyKey(const T& element, int newPriority) {
     int index = findElement(element);
 
     if (index == -1) {
-        throw std::runtime_error("Element not found in the priority queue");
+        throw std::runtime_error("Element nie znaleziony");
     }
 
     int oldPriority = heap[index].priority;
@@ -154,53 +163,59 @@ void HeapPrioQueue<T>::modifyKey(const T& element, int newPriority) {
     }
 }
 
+// Zwiêkszenie priorytetu elementu
 template <typename T>
 void HeapPrioQueue<T>::increaseKey(const T& element, int newPriority) {
     int index = findElement(element);
 
     if (index == -1) {
-        throw std::runtime_error("Element not found in the priority queue");
+        throw std::runtime_error("Element nie znaleziony");
     }
 
     if (newPriority <= heap[index].priority) {
-        throw std::runtime_error("New priority must be greater than current priority");
+        throw std::runtime_error("Nowa wartosc priorytetu musi byc wieksza od aktualnej");
     }
 
     heap[index].priority = newPriority;
     heapifyUp(index);
 }
 
+// Zmniejszenie priorytetu elementu
 template <typename T>
 void HeapPrioQueue<T>::decreaseKey(const T& element, int newPriority) {
     int index = findElement(element);
 
     if (index == -1) {
-        throw std::runtime_error("Element not found in the priority queue");
+        throw std::runtime_error("Element nie znaleziony");
     }
 
     if (newPriority >= heap[index].priority) {
-        throw std::runtime_error("New priority must be less than current priority");
+        throw std::runtime_error("Nowa wartosc priorytetu musi byc mniejsza od aktualnej");
     }
 
     heap[index].priority = newPriority;
     heapifyDown(index);
 }
 
+// Zwraca rozmiar kolejki
 template <typename T>
 size_t HeapPrioQueue<T>::returnSize() const {
     return heap.size();
 }
 
+// Sprawdzenie czy kolejka jest pusta
 template <typename T>
 bool HeapPrioQueue<T>::isEmpty() const {
     return heap.empty();
 }
 
+// Szuka elementu
 template <typename T>
 bool HeapPrioQueue<T>::find(const T& element) const {
     return findElement(element) != -1;
 }
 
+// Usuniêcie konkretnego elementu z kopca
 template <typename T>
 bool HeapPrioQueue<T>::remove(const T& element) {
     int index = findElement(element);
@@ -229,6 +244,7 @@ bool HeapPrioQueue<T>::remove(const T& element) {
     return true;
 }
 
+// Budowanie kolejki z pliku tekstowego
 template <typename T>
 void HeapPrioQueue<T>::buildFromFile(const std::string& filename) {
     // Najpierw usuñ poprzednie dane
@@ -236,7 +252,7 @@ void HeapPrioQueue<T>::buildFromFile(const std::string& filename) {
 
     std::ifstream file(filename);
     if (!file.is_open()) {
-        throw std::runtime_error("Could not open file: " + filename);
+        throw std::runtime_error("Nie mo¿na otworzyæ pliku: " + filename);
     }
 
     std::string line;
@@ -254,6 +270,7 @@ void HeapPrioQueue<T>::buildFromFile(const std::string& filename) {
     file.close();
 }
 
+// Tworzenie losowej kolejki
 template <typename T>
 void HeapPrioQueue<T>::createRandom(size_t size) {
     // Wyczyœæ istniej¹ce dane
@@ -280,32 +297,35 @@ void HeapPrioQueue<T>::createRandom(size_t size) {
             std::string randomStr = "item_" + std::to_string(i);
             insert(randomStr, generateRandomPriority());
         }
-        // Dla innych typów (jeœli bêd¹ u¿ywane) - domyœlna implementacja
+        // Dla innych typów - domyœlna implementacja
         else {
-            throw std::runtime_error("Random generation not supported for this type");
+            throw std::runtime_error("Losowe generowanie nie dziala dla tego typu plikou");
         }
     }
 }
 
+// Wyœwietlanie zawartoœci kolejki
 template <typename T>
 void HeapPrioQueue<T>::display() const {
     if (isEmpty()) {
-        std::cout << "Queue is empty." << std::endl;
+        std::cout << "Kolejka jest pusta." << std::endl;
         return;
     }
 
-    std::cout << "Queue contents (element, priority):" << std::endl;
+    std::cout << "Zawartosc kolejki (element, priorytet):" << std::endl;
     for (size_t i = 0; i < heap.size(); ++i) {
-        std::cout << heap[i].element << " (priority: " << heap[i].priority << ")" << std::endl;
+        std::cout << heap[i].element << " (priorytet: " << heap[i].priority << ")" << std::endl;
     }
 }
 
+// Czyszczenie kolejki
 template <typename T>
 void HeapPrioQueue<T>::clear() {
     heap.clear();
     currentOrder = 0;
 }
 
+// Wymuszenie instancjacji dla trzech typów
 template class HeapPrioQueue<int>;
 template class HeapPrioQueue<double>;
 template class HeapPrioQueue<std::string>;
