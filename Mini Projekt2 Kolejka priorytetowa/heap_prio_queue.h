@@ -5,7 +5,6 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
-#include <random>
 #include <ctime>
 
 template <typename T>
@@ -22,7 +21,6 @@ private:
 
     std::vector<Node> heap;                     // Przechowywanie kopca jako tablica
     size_t currentOrder;                        // Licznik do œledzenia kolejnoœci wstawiania
-    std::mt19937 rng;                           // Generator liczb losowych
     int minPriority;                            // Minimalna wartoœæ priorytetu
     int maxPriority;                            // Maksymalna wartoœæ priorytetu
 
@@ -30,13 +28,12 @@ private:
     void heapifyUp(int index);                  // Przesuwa wêze³ o indeksie "index" w górê, aby przywróciæ w³asnoœæ kopca
     void heapifyDown(int index);                // Przesuwa wêze³ o indeksie "index" w dó³, aby przywróciæ w³asnoœæ kopca
     int findElement(const T& element) const;    // Znajduje indeks wêz³a zawieraj¹cego podany element lub -1, jeœli nie istnieje    
-    int generateRandomPriority();               // Generuje losowy priorytet
 
 public:
     // Konstruktor z parametrami zakresu priorytetów
     HeapPrioQueue(int minPrio = 1, int maxPrio = 1000);
 
-    void insert(const T& element, int priority = -1);       // Wstawia element z okreœlonym priorytetem
+    void insert(const T& element, int priority);            // Wstawia element z okreœlonym priorytetem
     T extractMax();                                         // Usuwa i zwraca element o najwy¿szym priorytecie
     T findMax() const;                                      // Zwraca element o najwy¿szym priorytecie bez usuwania
     T peek() const;
@@ -51,10 +48,10 @@ public:
 
     bool find(const T& element) const;                      // metoda do znajdowania elementu
     bool remove(const T& element);                          // Usuniêcie konkretnego elementu
-    void buildFromFile(const std::string& filename); // Budowanie z pliku
-    void createRandom(size_t size);                  // Tworzenie losowej struktury
-    void display() const;                            // Wyœwietlanie zawartoœci kolejki
-    void clear();                                    // Czyszczenie kolejki
+    void buildFromFile(const std::string& filename);        // Budowanie z pliku
+    void createRandom(size_t size);                         // Tworzenie losowej struktury
+    void display() const;                                   // Wyœwietlanie zawartoœci kolejki
+    void clear();                                           // Czyszczenie kolejki
 
 };
 

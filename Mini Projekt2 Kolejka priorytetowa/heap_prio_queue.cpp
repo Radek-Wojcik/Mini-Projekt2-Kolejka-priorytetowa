@@ -5,24 +5,18 @@
 #include <limits>
 #include <fstream>
 #include <sstream>
+#include <random>
 
-// Konstruktor: inicjalizacja generatora i zakresu priorytetów
+// Konstruktor
 template <typename T>
 HeapPrioQueue<T>::HeapPrioQueue(int minPrio, int maxPrio)
     : currentOrder(0),
-    rng(static_cast<unsigned int>(std::time(nullptr))),
     minPriority(minPrio),
     maxPriority(maxPrio) {
     // Sprawdzenie, ¿e maxPriority jest wiêksze ni¿ minPriority
     if (minPriority >= maxPriority) {
         maxPriority = minPriority + 1000;     
     }
-}
-
-template <typename T>
-int HeapPrioQueue<T>::generateRandomPriority() {
-    std::uniform_int_distribution<int> dist(minPriority, maxPriority);
-    return dist(rng);
 }
 
 // Ustawienie nowego zakresu priorytetów, jeœli poprawny
@@ -101,9 +95,9 @@ int HeapPrioQueue<T>::findElement(const T& element) const {
 // Wstawianie nowego elementu
 template <typename T>
 void HeapPrioQueue<T>::insert(const T& element, int priority) {
-    // Jeœli priorytet jest -1, wygeneruj losowy priorytet
-    if (priority == -1) {
-        priority = generateRandomPriority();
+    // Sprawdzenie, czy priorytet mieœci siê w zakresie
+    if (priority < minPriority || priority > maxPriority) {
+        throw std::runtime_error("Priorytet poza dozwolonym zakresem");
     }
 
     heap.push_back(Node(element, priority, currentOrder++));
@@ -276,6 +270,9 @@ void HeapPrioQueue<T>::createRandom(size_t size) {
     // Wyczyœæ istniej¹ce dane
     clear();
 
+    std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
+    std::uniform_int_distribution<int> prioDist(minPriority, maxPriority);
+
     // Generuj losowe elementy i priorytety
     for (size_t i = 0; i < size; ++i) {
         // Dla typów liczbowych generujemy losowe wartoœci
@@ -290,12 +287,12 @@ void HeapPrioQueue<T>::createRandom(size_t size) {
                 randomElement = elemDist(rng);
             }
 
-            insert(randomElement, generateRandomPriority());
+            insert(randomElement, prioDist(rng));
         }
         // Dla stringów generujemy losowe ci¹gi znaków
         else if constexpr (std::is_same_v<T, std::string>) {
             std::string randomStr = "item_" + std::to_string(i);
-            insert(randomStr, generateRandomPriority());
+            insert(randomStr, prioDist(rng));
         }
         // Dla innych typów - domyœlna implementacja
         else {
