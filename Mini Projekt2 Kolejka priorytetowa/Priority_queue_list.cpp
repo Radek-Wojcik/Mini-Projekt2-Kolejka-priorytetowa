@@ -34,6 +34,26 @@ void ListQueue<T>::insert(T value, int priority) {
 }
 
 template<typename T>
+T ListQueue<T>::extract_max() {
+	T val;
+	if (head == nullptr) return; //jeœli lista jest pusta
+	val = head->data;
+	LNode* temp;
+	temp = head;
+	head = head->next;
+	delete temp;
+	size--;
+	if (head == nullptr) tail = nullptr; //je¿eli lista po usuniêciu pusta, zerujemy tail
+	return val;
+}
+
+template<typename T>
+T ListQueue<T>::find_max() {
+	if (head == nullptr) return; //jeœli lista jest pusta
+	return head->data;
+}
+
+template<typename T>
 ListQueue<T>::~ListQueue() {
 	while (head != nullptr) {
 		LNode* temp = head;
