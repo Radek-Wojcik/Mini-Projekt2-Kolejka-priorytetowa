@@ -54,6 +54,48 @@ T ListQueue<T>::find_max() {
 }
 
 template<typename T>
+void ListQueue<T>::modify_key(T value, int newPriority) {
+	//jesli lista jest pusta
+	if (head == nullptr) return;
+	LNode* current = head;
+	LNode* prev = nullptr;
+	LNode* target = nullptr;
+	//Szukamy elementu o zadanej wartosci
+	while (current != nullptr) {
+		if (current->value == value) {
+			if (current->value == value) {
+				target = current;
+				break;
+			}
+			prev = current;
+			current = current->next;
+		}
+	}
+	// Jeœli nie znaleziono - nic nie robimy
+	if (target == nullptr) return;
+
+	// Usuwamy element z listy
+	if (target == head) {
+		head = head->next;
+		if (target == tail) {
+			tail = nullptr;
+		}
+	}
+	else {
+		prev->next = target->next;
+		if (target == tail) {
+			tail = prev;
+		}
+	}
+
+	delete target;
+	size--;
+
+	// Wstawiamy go ponownie z nowym priorytetem
+	insert(value, newPriority);
+}
+
+template<typename T>
 ListQueue<T>::~ListQueue() {
 	while (head != nullptr) {
 		LNode* temp = head;
