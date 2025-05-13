@@ -1,0 +1,1 @@
+Struktura	Rozmiar	insert(ns)	extractMax(ns)	findMax(ns)	modifyKey(ns)	getSize(ns)

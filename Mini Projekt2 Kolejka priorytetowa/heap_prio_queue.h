@@ -31,7 +31,7 @@ private:
 
 public:
     // Konstruktor z parametrami zakresu priorytetów
-    HeapPrioQueue(int minPrio = 1, int maxPrio = 1000);
+    HeapPrioQueue(int minPrio = 1, int maxPrio = 1000000);
 
     void insert(const T& element, int priority);            // Wstawia element z okreœlonym priorytetem
     T extractMax();                                         // Usuwa i zwraca element o najwy¿szym priorytecie

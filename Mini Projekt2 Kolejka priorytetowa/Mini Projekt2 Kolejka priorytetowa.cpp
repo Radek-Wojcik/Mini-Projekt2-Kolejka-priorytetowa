@@ -11,7 +11,7 @@ using Clock = chrono::high_resolution_clock;
 
 void testHeapPriority();
 void testListPriority();
-//void testAllStructures();
+void testAllStructures();
 void generateRandomFile(const string& filename, int count);
 
 int main() {
@@ -28,7 +28,7 @@ int main() {
         switch (choice) {
         case 1: testHeapPriority(); break;
         case 2: testListPriority(); break;
-       // case 3: testAllStructures(); break;
+        case 3: testAllStructures(); break;
         case 4: {
             int capacity;
             cout << "Podaj wielkosc generowanego pliku: ";
@@ -162,44 +162,159 @@ void testListPriority() {
     } while (choice != 0);
 }
 
-/*void testAllStructures() {
-    const int sizes[] = { 20000, 40000, 60000, 80000, 100000, 120000, 140000,  };
+void testAllStructures() {
+    const int tab[] = { 20000, 40000, 60000, 80000, 100000, 120000, 140000 };
     const int iterations = 100;
-    ofstream out("wyniki.txt");
-    out << "Struktura\tRozmiar\tbuildFromFile(ms)\trandomFill(ms)\tExtractMax(ms)\n";
 
-    for (int n : sizes) {
+    std::mt19937_64 rng(static_cast<unsigned long>(std::time(nullptr)));
+    std::ofstream out("wyniki.txt");
+    out << "Struktura\tRozmiar\tinsert(ns)\textractMax(ns)\tfindMax(ns)\tmodifyKey(ns)\tgetSize(ns)\n";
+
+    for (int n : tab) {
+        std::uniform_int_distribution<int> distVal(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+        std::uniform_int_distribution<int> distPrio(0, 2 * n);
+
+        // Generuj dane testowe
         generateRandomFile("Liczby.txt", n);
-        // Test kopiec
-        HeapPrioQueue<int> heap(0, 100);
-        long sumBuild = 0, sumRandom = 0, sumExtract = 0;
-        for (int i = 0; i < iterations; i++) {
-            auto t0 = Clock::now(); heap.buildFromFile("Liczby.txt"); sumBuild += chrono::duration_cast<chrono::milliseconds>(Clock::now() - t0).count();
-            t0 = Clock::now(); heap.createRandom(n); sumRandom += chrono::duration_cast<chrono::milliseconds>(Clock::now() - t0).count();
+
+        // Wczytaj dane do wektora (przydatne do modyfikacji)
+        std::vector<std::pair<int, int>> fileData;
+        {
+            std::ifstream fin("Liczby.txt");
+            int v, p;
+            while (fin >> v >> p)
+                fileData.push_back(std::make_pair(v, p));
+        }
+        std::uniform_int_distribution<size_t> distIndex(0, fileData.size() - 1);
+
+        // Przygotuj dane testowe
+        std::vector<std::pair<int, int>> insertData(iterations);
+        std::vector<int> restorePrio(iterations);
+        std::vector<std::pair<int, int>> modifyData(iterations);
+
+        for (int i = 0; i < iterations; ++i) {
+            insertData[i] = std::make_pair(distVal(rng), distPrio(rng));
+            restorePrio[i] = distPrio(rng);
+            std::pair<int, int> valPair = fileData[distIndex(rng)];
+            modifyData[i] = std::make_pair(valPair.first, distPrio(rng));
+        }
+
+        long long sumInsH = 0, sumExtH = 0, sumFindH = 0, sumModH = 0, sumSzH = 0;
+        long long sumInsL = 0, sumExtL = 0, sumFindL = 0, sumModL = 0, sumSzL = 0;
+
+        // === HEAP ===
+        for (int i = 0; i < iterations; ++i) {
+            HeapPrioQueue<int> heap(0, 2 * n);
+
+            // insert
             heap.buildFromFile("Liczby.txt");
-            t0 = Clock::now(); heap.extractMax(); sumExtract += chrono::duration_cast<chrono::milliseconds>(Clock::now() - t0).count();
+            int v = insertData[i].first;
+            int p = insertData[i].second;
+            auto t0 = Clock::now();
+            heap.insert(v, p);
+            sumInsH += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+
+            // extract
+            heap.buildFromFile("Liczby.txt");
+            t0 = Clock::now();
+            int x = heap.extractMax();
+            sumExtH += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+            heap.insert(x, restorePrio[i]);
+
+            // find max
+            heap.buildFromFile("Liczby.txt");
+            t0 = Clock::now();
+            heap.findMax();
+            sumFindH += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+
+            // modify key
+            heap.buildFromFile("Liczby.txt");
+            int mv = modifyData[i].first;
+            int newp = modifyData[i].second;
+            t0 = Clock::now();
+            heap.modifyKey(mv, newp);
+            sumModH += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+
+            // get size
+            heap.buildFromFile("Liczby.txt");
+            t0 = Clock::now();
+            heap.returnSize();
+            sumSzH += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
         }
-        out << "Heap\t" << n << "\t" << sumBuild / iterations << "\t" << sumRandom / iterations << "\t" << sumExtract / iterations << "\n";
-        // Test lista
-        ListQueue<int> list;
-        long sumB2 = 0, sumR2 = 0, sumE2 = 0;
-        for (int i = 0; i < iterations; i++) {
-            auto t0 = Clock::now(); list.build_from_file("Liczby.txt"); sumB2 += chrono::duration_cast<chrono::milliseconds>(Clock::now() - t0).count();
-            t0 = Clock::now(); list.generate_random(n, 0, 100); sumR2 += chrono::duration_cast<chrono::milliseconds>(Clock::now() - t0).count();
+
+        // === LIST ===
+        for (int i = 0; i < iterations; ++i) {
+            ListQueue<int> list;
+
+            // insert
             list.build_from_file("Liczby.txt");
-            t0 = Clock::now(); list.extract_max(); sumE2 += chrono::duration_cast<chrono::milliseconds>(Clock::now() - t0).count();
+            int v = insertData[i].first;
+            int p = insertData[i].second;
+            auto t0 = Clock::now();
+            list.insert(v, p);
+            sumInsL += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+
+            // extract
+            list.build_from_file("Liczby.txt");
+            t0 = Clock::now();
+            int x = list.extract_max();
+            sumExtL += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+            list.insert(x, restorePrio[i]);
+
+            // find max
+            list.build_from_file("Liczby.txt");
+            t0 = Clock::now();
+            list.find_max();
+            sumFindL += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+
+            // modify key
+            list.build_from_file("Liczby.txt");
+            int mv = modifyData[i].first;
+            int newp = modifyData[i].second;
+            t0 = Clock::now();
+            list.modify_key(mv, newp);
+            sumModL += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
+
+            // get size
+            list.build_from_file("Liczby.txt");
+            t0 = Clock::now();
+            list.get_size();
+            sumSzL += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - t0).count();
         }
-        out << "List\t" << n << "\t" << sumB2 / iterations << "\t" << sumR2 / iterations << "\t" << sumE2 / iterations << "\n";
+
+        // 5. Wyniki
+        double div = static_cast<double>(iterations);
+        std::cout << "\nRozmiar: " << n << "\n"
+            << "Heap: insert=" << sumInsH / div
+            << "ns, extract=" << sumExtH / div
+            << "ns, find=" << sumFindH / div
+            << "ns, modify=" << sumModH / div
+            << "ns, size=" << sumSzH / div << "ns\n";
+
+        std::cout << "List: insert=" << sumInsL / div
+            << "ns, extract=" << sumExtL / div
+            << "ns, find=" << sumFindL / div
+            << "ns, modify=" << sumModL / div
+            << "ns, size=" << sumSzL / div << "ns\n";
+
+        // 6. Zapis do pliku
+        out << "Heap\t" << n << "\t" << sumInsH / div << "\t" << sumExtH / div
+            << "\t" << sumFindH / div << "\t" << sumModH / div << "\t" << sumSzH / div << "\n";
+        out << "List\t" << n << "\t" << sumInsL / div << "\t" << sumExtL / div
+            << "\t" << sumFindL / div << "\t" << sumModL / div << "\t" << sumSzL / div << "\n";
     }
+
     out.close();
-    cout << "Wyniki zapisane w wyniki.txt" << endl;
-}*/
+    std::cout << "\nWyniki zapisane w wyniki.txt\n";
+}
+
+
 
 void generateRandomFile(const string& filename, int count) {
     ofstream file(filename);
     mt19937 rng(static_cast<unsigned int>(time(nullptr)));
     uniform_int_distribution<int> distElem(0, 1000000);
-    uniform_int_distribution<int> distPrio(0, 100);
+    uniform_int_distribution<int> distPrio(0, count*2);
     for (int i = 0; i < count; i++) {
         file << distElem(rng) << " " << distPrio(rng) << "\n";
     }

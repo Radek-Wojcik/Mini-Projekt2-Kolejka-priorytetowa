@@ -143,7 +143,7 @@ void HeapPrioQueue<T>::modifyKey(const T& element, int newPriority) {
     int index = findElement(element);
 
     if (index == -1) {
-        throw std::runtime_error("Element nie znaleziony");
+        return;
     }
 
     int oldPriority = heap[index].priority;
