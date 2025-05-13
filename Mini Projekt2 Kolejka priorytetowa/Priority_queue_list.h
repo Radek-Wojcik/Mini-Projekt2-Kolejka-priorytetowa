@@ -10,14 +10,14 @@ struct LNode {
 	int priority;
 	T data;
 	LNode* next;
-	LNode(T value, int priority, Node* tempNext) : data(value), priority(priority), next(tempNext) {}
+	LNode(T value, int priority, LNode<T>* tempNext) : data(value), priority(priority), next(tempNext) {}
 };
 
 template <typename T>
 class ListQueue {
 private:
-	LNode* head;
-	LNode* tail;
+	LNode<T>* head;
+	LNode<T>* tail;
 	int size;
 public:
 	ListQueue();

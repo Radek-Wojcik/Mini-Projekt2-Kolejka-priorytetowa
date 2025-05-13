@@ -13,16 +13,16 @@ int ListQueue<T>::get_size() const {
 
 template<typename T>
 void ListQueue<T>::insert(T value, int priority) {
-	LNode* newNode = new LNode(value, priority, head);
+	LNode<T>* newNode = new LNode<T>(value, priority, head);
 	//Jesli lista jest pusta lub nowy ma wiekszy priorytet niz pierwszy element
 	if (head == nullptr || priority > head->priority) {
 		newNode->next = head;
 		head = newNode;
-		if (tail == nultptr) tail = newNode;
+		if (tail == nullptr) tail = newNode;
 	}
 	else {
 		//szukamy miejsca do wstawienia
-		LNode* current = head;
+		LNode<T>* current = head;
 		while (current->next != nullptr && current->next->priority >= priority) {
 			current = current->next;
 		}
@@ -39,7 +39,7 @@ T ListQueue<T>::extract_max() {
 	T val;
 	if (head == nullptr) return; //jeœli lista jest pusta
 	val = head->data;
-	LNode* temp;
+	LNode<T>* temp;
 	temp = head;
 	head = head->next;
 	delete temp;
@@ -58,19 +58,17 @@ template<typename T>
 void ListQueue<T>::modify_key(T value, int newPriority) {
 	//jesli lista jest pusta
 	if (head == nullptr) return;
-	LNode* current = head;
-	LNode* prev = nullptr;
-	LNode* target = nullptr;
+	LNode<T>* current = head;
+	LNode<T>* prev = nullptr;
+	LNode<T>* target = nullptr;
 	//Szukamy elementu o zadanej wartosci
 	while (current != nullptr) {
 		if (current->value == value) {
-			if (current->value == value) {
-				target = current;
-				break;
-			}
+			target = current;
+			break;
+		}
 			prev = current;
 			current = current->next;
-		}
 	}
 	// Jeœli nie znaleziono - nic nie robimy
 	if (target == nullptr) return;
@@ -99,7 +97,7 @@ void ListQueue<T>::modify_key(T value, int newPriority) {
 //funkcje do menu
 template<typename T>
 void ListQueue<T>::show() const {
-	LNode* temp = head;
+	LNode<T>* temp = head;
 	while (temp) {
 		std::cout << temp->priority << ": " << temp->data << " -> ";
 		temp = temp->next;
@@ -112,7 +110,7 @@ void ListQueue<T>::show() const {
 template<typename T>
 void ListQueue<T>::clear() {
 	while (head != nullptr) {
-		Node* temp = head;
+		LNode<T>* temp = head;
 		head = head->next;
 		delete temp;
 	}
@@ -153,7 +151,7 @@ void ListQueue<T>::generate_random(int count, int minVal, int maxVal) {
 template<typename T>
 ListQueue<T>::~ListQueue() {
 	while (head != nullptr) {
-		LNode* temp = head;
+		LNode<T>* temp = head;
 		head = head->next;
 		delete temp;
 	}
