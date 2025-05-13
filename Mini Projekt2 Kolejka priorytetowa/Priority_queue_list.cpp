@@ -1,6 +1,7 @@
-/*#include "Priority_queue_list.h"
+#include "Priority_queue_list.h"
 #include<iostream>
 #include<string>
+#include<fstream>
 
 template<typename T>
 ListQueue<T>::ListQueue() : head(nullptr), tail(nullptr), size(0) {}
@@ -95,6 +96,60 @@ void ListQueue<T>::modify_key(T value, int newPriority) {
 	insert(value, newPriority);
 }
 
+//funkcje do menu
+template<typename T>
+void ListQueue<T>::show() const {
+	LNode* temp = head;
+	while (temp) {
+		std::cout << temp->priority << ": " << temp->data << " -> ";
+		temp = temp->next;
+	}
+	std::cout << std::endl;
+}
+
+
+// Usuwa wszystkie dane z listy (przydatne przed wczytaniem z pliku)
+template<typename T>
+void ListQueue<T>::clear() {
+	while (head != nullptr) {
+		Node* temp = head;
+		head = head->next;
+		delete temp;
+	}
+	tail = nullptr;
+	size = 0;
+}
+
+// Buduje listê z pliku (czyta wartoœci ca³kowite z pliku)
+template<typename T>
+void ListQueue<T>::build_from_file(const std::string& filename) {
+	clear(); // Usuwamy istniej¹ce dane
+
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Nie mo¿na otworzyæ pliku: " << filename << std::endl;
+		return;
+	}
+	T value;
+	int priority;
+	while (file >> value >> priority) {
+		insert(value, priority);
+	}
+	file.close();
+}
+
+// Tworzy losow¹ strukturê o podanej wielkoœci
+template<typename T>
+void ListQueue<T>::generate_random(int count, int minVal, int maxVal) {
+	clear(); // Usuwamy istniej¹ce dane
+	std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+	for (int i = 0; i < count; ++i) {
+		T value = static_cast<T>(minVal + std::rand() % (maxVal - minVal + 1));
+		int priority = std::rand() % 100; // losowy priorytet od 0 do 99
+		insert(value, priority);
+	}
+}
 template<typename T>
 ListQueue<T>::~ListQueue() {
 	while (head != nullptr) {
@@ -103,4 +158,4 @@ ListQueue<T>::~ListQueue() {
 		delete temp;
 	}
 	tail = nullptr;
-}*/
+}
