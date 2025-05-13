@@ -37,7 +37,7 @@ void ListQueue<T>::insert(T value, int priority) {
 template<typename T>
 T ListQueue<T>::extract_max() {
 	T val;
-	if (head == nullptr) return; //jeœli lista jest pusta
+	if (!head) throw std::runtime_error("extract_max(): kolejka jest pusta"); //jeœli lista jest pusta
 	val = head->data;
 	LNode<T>* temp;
 	temp = head;
@@ -50,7 +50,7 @@ T ListQueue<T>::extract_max() {
 
 template<typename T>
 T ListQueue<T>::find_max() {
-	if (head == nullptr) return; //jeœli lista jest pusta
+	if (!head) throw std::runtime_error("find_max(): kolejka jest pusta"); //jeœli lista jest pusta
 	return head->data;
 }
 
@@ -63,7 +63,7 @@ void ListQueue<T>::modify_key(T value, int newPriority) {
 	LNode<T>* target = nullptr;
 	//Szukamy elementu o zadanej wartosci
 	while (current != nullptr) {
-		if (current->value == value) {
+		if (current->data == value) {
 			target = current;
 			break;
 		}
@@ -157,3 +157,4 @@ ListQueue<T>::~ListQueue() {
 	}
 	tail = nullptr;
 }
+template class ListQueue<int>;

@@ -10,9 +10,9 @@
 using namespace std;
 using Clock = chrono::high_resolution_clock;
 
-// Deklaracja funkcji testowychoid testHeapPriority();
+void testHeapPriority();
 void testListPriority();
-void testAllStructures();
+//void testAllStructures();
 void generateRandomFile(const string& filename, int count);
 
 int main() {
@@ -29,7 +29,7 @@ int main() {
         switch (choice) {
         case 1: testHeapPriority(); break;
         case 2: testListPriority(); break;
-        case 3: testAllStructures(); break;
+        //case 3: testAllStructures(); break;
         case 4: {
             int capacity;
             cout << "Podaj wielkosc generowanego pliku: ";
@@ -163,7 +163,7 @@ void testListPriority() {
     } while (choice != 0);
 }
 
-void testAllStructures() {
+/*void testAllStructures() {
     const int sizes[] = { 10000,20000,30000,40000,50000 };
     const int iterations = 100;
     ofstream out("wyniki.txt");
@@ -194,7 +194,7 @@ void testAllStructures() {
     }
     out.close();
     cout << "Wyniki zapisane w wyniki.txt" << endl;
-}
+}*/
 
 void generateRandomFile(const string& filename, int count) {
     ofstream file(filename);
