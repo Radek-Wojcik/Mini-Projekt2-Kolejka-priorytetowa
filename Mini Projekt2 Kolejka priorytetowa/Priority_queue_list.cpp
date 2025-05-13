@@ -23,7 +23,12 @@ void ListQueue<T>::insert(T value, int priority) {
 	else {
 		//szukamy miejsca do wstawienia
 		LNode<T>* current = head;
-		while (current->next != nullptr && current->next->priority >= priority) {
+		while (current->next != nullptr && current->next->priority > priority) {
+			current = current->next;
+		}
+		// Teraz current->next ma priorytet <= new_priority.
+		// Jeœli priorytet równy, to newNode wstawi siê ZA istniej¹cymi równymi.
+		while (current->next && current->next->priority == priority) {
 			current = current->next;
 		}
 		newNode->next = current->next;
@@ -99,7 +104,7 @@ template<typename T>
 void ListQueue<T>::show() const {
 	LNode<T>* temp = head;
 	while (temp) {
-		std::cout << temp->priority << ": " << temp->data << " -> ";
+		std::cout << "Priorytet: " << temp->priority << " Wartosc: " << temp->data << "\n";
 		temp = temp->next;
 	}
 	std::cout << std::endl;

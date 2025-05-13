@@ -1,5 +1,4 @@
-﻿// main.cpp
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <string>
 #include <chrono>
@@ -29,7 +28,7 @@ int main() {
         switch (choice) {
         case 1: testHeapPriority(); break;
         case 2: testListPriority(); break;
-        //case 3: testAllStructures(); break;
+       // case 3: testAllStructures(); break;
         case 4: {
             int capacity;
             cout << "Podaj wielkosc generowanego pliku: ";
@@ -164,7 +163,7 @@ void testListPriority() {
 }
 
 /*void testAllStructures() {
-    const int sizes[] = { 10000,20000,30000,40000,50000 };
+    const int sizes[] = { 20000, 40000, 60000, 80000, 100000, 120000, 140000,  };
     const int iterations = 100;
     ofstream out("wyniki.txt");
     out << "Struktura\tRozmiar\tbuildFromFile(ms)\trandomFill(ms)\tExtractMax(ms)\n";
